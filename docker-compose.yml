@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+  gitlab:
+    container_name: gitlab
+    hostname: gitlab.cfn-nag.com
+    image: gitlab/gitlab-ce
+    networks:
+      - gitlab
+    ports:
+      - 22:22
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./gitlab/config:/etc/gitlab
+      - ./gitlab/logs:/var/log/gitlab
+      - ./gitlab/data:/var/opt/gitlab
+  gitlab-runner:
+    container_name: gitlab-runner
+    image: gitlab/gitlab-runner
+    networks:
+      - gitlab
+    restart: always
+    volumes:
+      - ./gitlab-runner/config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  gitlab:
+    name: gitlab
